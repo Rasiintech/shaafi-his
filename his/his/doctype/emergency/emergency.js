@@ -131,7 +131,7 @@ frappe.ui.form.on('Emergency', {
                     method: "his.api.refer.refer", //dotted path to server method
                     args: {
                         "patient" : frm.doc.patient,
-                        "practitioner" : practitioner,
+                        "practitioner" : frm.doc.practitioner,
                         "name": frm.doc.name,
                         "referring_practitioner": frm.doc.practitioner,
                     },
@@ -262,6 +262,12 @@ d.show();
 					// 	});
 					// 	},)
 					});
+                    var btn1 = frm.add_custom_button('Requests', () => {
+				frappe.new_doc("Inpatient Order", { "patient": frm.doc.patient, "practitioner": frm.doc.practitioner, "source_order": "E.R" })
+		
+			})
+	
+			btn1.addClass('btn-primary');
 		}
 	},
     after_save: function(frm){

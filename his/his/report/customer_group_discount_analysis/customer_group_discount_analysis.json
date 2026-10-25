@@ -1,5 +1,5 @@
 {
- "add_total_row": 1,
+ "add_total_row": 0,
  "columns": [],
  "creation": "2026-06-02 14:10:58.212234",
  "disable_prepared_report": 0,
@@ -10,7 +10,7 @@
  "idx": 0,
  "is_standard": "Yes",
  "letter_head": "logo",
- "modified": "2026-06-02 14:16:11.894029",
+ "modified": "2026-10-10 17:05:15.457806",
  "modified_by": "Administrator",
  "module": "HIS",
  "name": "Customer Group Discount Analysis",

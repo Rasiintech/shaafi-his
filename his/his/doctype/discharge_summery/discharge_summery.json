@@ -68,7 +68,8 @@
   "section_break_x2orx",
   "ht",
   "gu",
-  "datte"
+  "datte",
+  "emergency"
  ],
  "fields": [
   {
@@ -421,12 +422,18 @@
    "fieldtype": "Link",
    "label": "Operator",
    "options": "Healthcare Practitioner"
+  },
+  {
+   "fieldname": "emergency",
+   "fieldtype": "Link",
+   "label": "Emergency",
+   "options": "Emergency"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-04-15 10:07:20.025430",
+ "modified": "2026-08-13 15:33:56.024760",
  "modified_by": "Administrator",
  "module": "HIS",
  "name": "Discharge Summery",

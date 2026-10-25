@@ -13,6 +13,7 @@
   "date",
   "section_break_8dyql",
   "from_account",
+  "balance",
   "column_break_talot",
   "to_account",
   "section_break_5ns5h",
@@ -108,12 +109,19 @@
    "fieldtype": "Small Text",
    "label": "Remark",
    "reqd": 1
+  },
+  {
+   "depends_on": "eval: doc.from_account",
+   "fieldname": "balance",
+   "fieldtype": "Currency",
+   "label": "Balance",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-02-16 14:43:28.635057",
+ "modified": "2026-10-15 13:52:17.470533",
  "modified_by": "Administrator",
  "module": "HIS",
  "name": "Cash Transfer",

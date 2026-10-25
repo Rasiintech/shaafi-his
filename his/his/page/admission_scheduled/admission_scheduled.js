@@ -455,13 +455,20 @@ function admit(inpatient_record, patient, practitioner){
 			{fieldtype: 'Link', label: 'Room', fieldname: 'room', options: 'Healthcare Service Unit Type',reqd: 1},
 			{fieldtype: 'Link', label: 'Bed', fieldname: 'bed', options: 'Healthcare Service Unit', reqd: 1},
 			{fieldtype: 'Link', label: 'Additional Bed', fieldname: 'bed2', options: 'Healthcare Service Unit', reqd: 0, "hidden": 1},
-			{fieldtype: 'Datetime', label: 'Check In', fieldname: 'check_in', reqd: 1, default: frappe.datetime.now_datetime()}
+			{fieldtype: 'Datetime', label: 'Check In', fieldname: 'check_in', reqd: 1, default: frappe.datetime.now_datetime()},
+			{ fieldtype: 'Check', label: 'Bill to Insurance', fieldname: 'is_insurance', reqd: 0 },
+			{ fieldtype: 'Link', label: 'Insurance', fieldname: 'insurance', reqd: 0, options: "Customer", depends_on: "eval:(doc.is_insurance == 1)", mandatory_depends_on:  "eval:(doc.is_insurance == 1)",
+			get_query: function() {
+				return {
+					query: "his.api.dp_drug_pr_link_query.insurance",  // Custom query method
+				};
+			}, },
 			   
 	
 		],
 		primary_action_label: 'Submit',
 		primary_action(values) {
-			admit_p(inpatient_record ,values.bed , patient, practitioner, values.type )
+			admit_p(inpatient_record ,values.bed ,values.is_insurance,values.insurance, patient, practitioner, values.type )
 			// alert("ok")
 				// console.log(values.room)
 			//    frappe.route_options = {'room': values.room , "type" : values.type  , "inp_doc" : inpatient_record  , "patient" : patient };
@@ -491,7 +498,7 @@ function admit(inpatient_record, patient, practitioner){
 	d.show();
 }
 
-function admit_p(inpatient_record, bed,patient_name, practitioner, type){
+function admit_p(inpatient_record, bed,is_insurance,insurance, patient_name, practitioner, type){
 	frappe.call({
 			
 		method: 'his.api.admit.admit_p_bed',
@@ -501,7 +508,9 @@ function admit_p(inpatient_record, bed,patient_name, practitioner, type){
 			'service_unit': bed,
 			"patient":patient_name,
 			"practitioner":practitioner,
-			'type' : type
+			'type' : type,
+			"is_insurance" : is_insurance,
+			"insurance" : insurance
 			
 			// "is_insurance" : data.ref_insturance
 			// 'check_in': Date(),

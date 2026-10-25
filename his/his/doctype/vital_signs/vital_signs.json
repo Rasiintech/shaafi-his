@@ -39,7 +39,9 @@
   "column_break_14",
   "nutrition_note",
   "sb_references",
-  "amended_from"
+  "amended_from",
+  "spo2",
+  "consciousness_level"
  ],
  "fields": [
   {
@@ -265,11 +267,21 @@
   {
    "fieldname": "column_break_guwwr",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "spo2",
+   "fieldtype": "Data",
+   "label": "SpO2"
+  },
+  {
+   "fieldname": "consciousness_level",
+   "fieldtype": "Data",
+   "label": "consciousness level"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2025-04-01 07:42:36.766887",
+ "modified": "2026-08-13 17:04:18.080767",
  "modified_by": "Administrator",
  "module": "HIS",
  "name": "Vital Signs",

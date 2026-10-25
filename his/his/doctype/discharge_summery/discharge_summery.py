@@ -38,3 +38,16 @@ def check_out_inpatient(inpatient_record):
                 frappe.db.set_value(
                     "Healthcare Service Unit", inpatient_occupancy.service_unit, "occupancy_status", "Vacant"
                 )
+
+@frappe.whitelist()
+def cancel_schedule(inpatient_record):
+    inpatient_record_name = inpatient_record  # keep the original string name
+
+    if frappe.db.exists("Inpatient Record", inpatient_record_name):
+        inpatient_doc = frappe.get_doc("Inpatient Record", inpatient_record_name)
+        inpatient_doc.status = "Admitted"
+        inpatient_doc.save()
+
+        if frappe.db.exists("Discharge And Clearance", {"inpatient_record": inpatient_record_name}):
+            clearance_doc = frappe.get_doc("Discharge And Clearance", {"inpatient_record": inpatient_record_name})
+            clearance_doc.delete()

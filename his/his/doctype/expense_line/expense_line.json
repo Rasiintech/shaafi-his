@@ -77,7 +77,7 @@
    "options": "reference_type"
   },
   {
-   "depends_on": "eval: frappe.user.has_role",
+   "depends_on": "eval: frappe.user.has_role(\"Expense Approver\")",
    "fieldname": "expense_type",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -88,7 +88,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-03-31 20:47:15.333291",
+ "modified": "2026-09-01 19:25:52.307657",
  "modified_by": "Administrator",
  "module": "HIS",
  "name": "Expense Line",

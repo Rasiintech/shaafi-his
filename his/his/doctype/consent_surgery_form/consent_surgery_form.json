@@ -108,6 +108,7 @@
    "fetch_from": "surgery_preparation.consultant",
    "fieldname": "practitioner",
    "fieldtype": "Link",
+   "ignore_user_permissions": 1,
    "label": "Consultant",
    "options": "Healthcare Practitioner"
   },
@@ -137,7 +138,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-01 14:03:41.551309",
+ "modified": "2026-10-19 09:12:11.948073",
  "modified_by": "Administrator",
  "module": "HIS",
  "name": "Consent Surgery Form",

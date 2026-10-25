@@ -19,6 +19,20 @@ def my_custom_query(doctype, txt, searchfield, start, page_len, filters):
     return query
 
 
+@frappe.whitelist()
+@frappe.validate_and_sanitize_search_inputs
+def insurance(doctype, txt, searchfield, start, page_len, filters):
+    
+    query = frappe.db.sql(f"""
+        SELECT name, customer_name
+        FROM `tabCustomer`
+        WHERE customer_group = "Insurance" AND disabled = 0 
+      
+    """)
+
+    return query
+
+
 
 
     # frappe.msgprint(str(doctype))

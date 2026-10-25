@@ -14,17 +14,17 @@ from his.his.doctype.radiology.radiology import update_check_tests_stat
 
 class LabResult(Document):
     def on_submit(self):
-        doc=self
-        status = ''
-        mobile= frappe.db.get_value("Patient",doc.patient, "mobile_no")
-        messge= doc.patient_name+" , Jawaabta sheybaarka waa soo baxday fadlan aad qaybta shaybaarka"
-        labs = frappe.db.get_list("Lab Result", filters={"patient": doc.patient, "date": doc.date}, fields=['docstatus'])
-        all_docstatus_one = all(lab.docstatus == 1 for lab in labs)
-        if all_docstatus_one:
-            try:
-                send_sms(mobile, messge)
-            except Exception as e:
-                a="l"
+        # doc=self
+        # status = ''
+        # mobile= frappe.db.get_value("Patient",doc.patient, "mobile_no")
+        # messge= doc.patient_name+" , Jawaabta sheybaarka waa soo baxday fadlan aad qaybta shaybaarka"
+        # labs = frappe.db.get_list("Lab Result", filters={"patient": doc.patient, "date": doc.date}, fields=['docstatus'])
+        # all_docstatus_one = all(lab.docstatus == 1 for lab in labs)
+        # if all_docstatus_one:
+        #     try:
+        #         send_sms(mobile, messge)
+        #     except Exception as e:
+        #         a="l"
 
         # update_check_tests_stat(self)
         itms= []

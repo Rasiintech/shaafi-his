@@ -520,10 +520,9 @@
    "label": "Note"
   }
  ],
- "in_create": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-17 17:15:27.220762",
+ "modified": "2026-10-21 15:10:49.094086",
  "modified_by": "Administrator",
  "module": "HIS",
  "name": "Lab Result",

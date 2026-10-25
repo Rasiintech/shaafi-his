@@ -1,0 +1,57 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2026-10-09 14:54:38.752130",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "default": "Today",
+   "fieldname": "from",
+   "fieldtype": "Date",
+   "label": "From",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  },
+  {
+   "default": "Today",
+   "fieldname": "to",
+   "fieldtype": "Date",
+   "label": "To",
+   "mandatory": 1,
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "logo",
+ "modified": "2026-10-09 15:37:10.235881",
+ "modified_by": "Administrator",
+ "module": "HIS",
+ "name": "Lab Result By Patient",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT\r\n    L.patient AS \"PID:Link/Patient:130\",\r\n    L.patient_name AS \"Name:Data:250\",\r\n    COUNT(L.name) AS \"Lab Results:Int:120\",\r\n    MIN(L.date) AS \"First Date:Date:110\",\r\n    MAX(L.date) AS \"Last Date:Date:110\"\r\nFROM\r\n    `tabLab Result` L\r\nWHERE\r\n    L.date BETWEEN %(from)s AND %(to)s\r\n    AND L.docstatus = 1\r\nGROUP BY\r\n    L.patient, L.patient_name\r\nORDER BY\r\n    L.patient_name",
+ "ref_doctype": "Lab Result",
+ "report_name": "Lab Result By Patient",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "All"
+  },
+  {
+   "role": "Physician"
+  },
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Laboratory User"
+  },
+  {
+   "role": "LabTest Approver"
+  }
+ ]
+}

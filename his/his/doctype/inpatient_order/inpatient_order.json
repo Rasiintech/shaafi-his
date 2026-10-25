@@ -21,6 +21,7 @@
   "inpatient_status",
   "room",
   "bed",
+  "source_order",
   "column_break_6",
   "company",
   "encounter_date",
@@ -343,11 +344,18 @@
    "fieldtype": "Table",
    "label": "Packages Prescription",
    "options": "Packages Prescription"
+  },
+  {
+   "fieldname": "source_order",
+   "fieldtype": "Link",
+   "label": "Source Order",
+   "options": "Source Order",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2026-07-04 19:57:27.000684",
+ "modified": "2026-09-29 12:18:43.740307",
  "modified_by": "Administrator",
  "module": "HIS",
  "name": "Inpatient Order",

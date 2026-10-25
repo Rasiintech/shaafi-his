@@ -815,7 +815,7 @@ class EmergencyNurse {
 		return;
 	}
 
-	frappe.new_doc("Discharge Summery", {
+	frappe.new_doc("Discharge Emergency", {
 		patient: row_data.patient,
 		patient_name: row_data.patient_name,
 		emergency: emergency_name,

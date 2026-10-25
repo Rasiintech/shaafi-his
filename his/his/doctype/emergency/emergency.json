@@ -19,6 +19,7 @@
   "inpatient_record",
   "inpatient_status",
   "room",
+  "source_order",
   "column_break_6",
   "company",
   "encounter_date",
@@ -33,6 +34,7 @@
   "add_vital_sign",
   "vital",
   "emergency_impression_tab",
+  "triage_level",
   "section_break_lewwb",
   "symptoms",
   "column_break_cycjp",
@@ -213,17 +215,16 @@
   {
    "fetch_from": "practitioner.practitioner_name",
    "fieldname": "practitioner_name",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Practitioner Name",
-   "options": "Healthcare Practitioner",
    "read_only": 1
   },
   {
    "fieldname": "ref_practitioner",
    "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Ref Practitioner"
+   "label": "Ref Practitioner",
+   "read_only": 1
   },
   {
    "fieldname": "request",
@@ -243,7 +244,6 @@
   {
    "fieldname": "emergency_impression_tab",
    "fieldtype": "Tab Break",
-   "hidden": 1,
    "label": "Symptoms & Diagnosis"
   },
   {
@@ -484,8 +484,7 @@
   {
    "fieldname": "status",
    "fieldtype": "Data",
-   "label": "status",
-   "read_only": 1
+   "label": "status"
   },
   {
    "fieldname": "select_lab_tests",
@@ -606,11 +605,26 @@
    "fieldname": "exposure",
    "fieldtype": "Data",
    "label": "Exposure"
+  },
+  {
+   "fieldname": "triage_level",
+   "fieldtype": "Select",
+   "label": "triage_level",
+   "options": "\nGreen\nYellow\nRed"
+  },
+  {
+   "default": "E.R",
+   "fieldname": "source_order",
+   "fieldtype": "Link",
+   "label": "Source Order",
+   "options": "Source Order",
+   "read_only": 1
   }
  ],
+ "in_create": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-07-18 13:22:33.710648",
+ "modified": "2026-09-29 12:12:41.787625",
  "modified_by": "Administrator",
  "module": "HIS",
  "name": "Emergency",

@@ -145,8 +145,11 @@ IPD = Class.extend(
 
 			}
 
+			let btncancel =  `
+			<button class='btn btn-danger ml-2' onclick = "cancel('${row.name}')"> Cancel</button>
+			`
 			
-			row['action'] = btnhml
+			row['action'] = btnhml + btncancel
 			new_data.push(row)
 		})
 		// console.log(columns)
@@ -375,3 +378,37 @@ function discharge(name){
 
 
 }
+
+function cancel(name){
+
+	// alert(name)
+		frappe.confirm('Are you sure you want to cancel?',
+		() => {
+			// action to perform if Yes is selected
+	
+			frappe.call({
+				method: "his.his.doctype.discharge_summery.discharge_summery.cancel_schedule", //dotted path to server method
+				args: {
+					'inpatient_record' : name
+				},
+				callback: function(r) {
+					// code snippet
+					// console.log(r)
+				// frm.set_value("status" , "Refered")
+				
+				// frappe.utils.print("Inpatient Record",name,"Exit Gate","logo")
+				frappe.utils.play_sound("submit")
+		
+				frappe.show_alert({
+				message:__('You have Cancelled Patient Succesfully'),
+				indicator:'green',
+				
+			}, 5);
+				}
+			});
+		}, () => {
+			// action to perform if No is selected
+		})
+	
+	
+	}

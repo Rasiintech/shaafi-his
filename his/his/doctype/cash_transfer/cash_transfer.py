@@ -65,3 +65,18 @@ class CashTransfer(Document):
 		# frappe.throw(('This is an Error Message'))
 		journal = frappe.get_doc("Journal Entry" , self.journal_entry)
 		journal.cancel()
+
+
+
+	@frappe.whitelist()
+	def get_from_account_balance(self):
+		if not self.from_account:
+			return 0
+
+		if not self.date:
+			frappe.throw("Date is required.")
+
+		return get_balance_on(
+			account=self.from_account,
+			date=self.date
+		)

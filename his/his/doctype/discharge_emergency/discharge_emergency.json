@@ -1,0 +1,512 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "DE-.##### ",
+ "creation": "2026-08-13 16:22:03.537807",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "patient",
+  "patient_name",
+  "telephone",
+  "date_of_birth",
+  "sex",
+  "registration_no",
+  "doctor_plan",
+  "inpatient_recoard",
+  "column_break_2",
+  "discharged_type",
+  "ref_practitioner",
+  "blood_group",
+  "most_responsible_consult_doctor",
+  "date_of_admission",
+  "inpatient_record",
+  "type",
+  "date",
+  "time_of_discharge",
+  "operator",
+  "section_break_vg6cv",
+  "diagnosis_at_discharge",
+  "column_break_0rhmv",
+  "operations_and_procedures",
+  "section_break_wxaod",
+  "reason__admission_and_presenting_complaints",
+  "relevant_investigations_and_results",
+  "column_break_kzfd4",
+  "physical",
+  "section_break_7escr",
+  "cognitive",
+  "column_break_yl7zt",
+  "others",
+  "on_admission_at_discharge",
+  "aot_section",
+  "gp_actions_date",
+  "actions_and_outstanding_investigations",
+  "medications_stopped_changed_section",
+  "select",
+  "if_yes_please_give_details",
+  "name_of_doctor",
+  "section_break_vz1zs",
+  "discharge_tab",
+  "section_break_zzf3e",
+  "discharge_drug_prescription",
+  "details_of_discharging_doctor_section",
+  "medication_so",
+  "services_so",
+  "inpatient_order",
+  "ref_practitoner",
+  "pharmacy_dispensed_by",
+  "deet",
+  "finance_department_section",
+  "state_of_patient_account_clearance_section",
+  "clearing",
+  "column_break_xbfsi",
+  "not_clearing",
+  "section_break_x2orx",
+  "ht",
+  "gu",
+  "datte",
+  "emergency",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "patient",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Patient",
+   "options": "Patient",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "patient.patient_name",
+   "fieldname": "patient_name",
+   "fieldtype": "Data",
+   "label": "Patient Name"
+  },
+  {
+   "fetch_from": "patient.mobile",
+   "fieldname": "telephone",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Telephone"
+  },
+  {
+   "fetch_from": "patient.dob",
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "Date Of Birth"
+  },
+  {
+   "fetch_from": "patient.sex",
+   "fieldname": "sex",
+   "fieldtype": "Data",
+   "label": "Sex"
+  },
+  {
+   "fieldname": "registration_no",
+   "fieldtype": "Data",
+   "label": "Registration no"
+  },
+  {
+   "fieldname": "doctor_plan",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Doctor Plan",
+   "options": "Doctor Plan",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "patient.inpatient_record",
+   "fieldname": "inpatient_recoard",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Inpatient"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "discharged_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Discharged Type",
+   "options": "Recovered\nReferd\nDeath\nSelf Discharged",
+   "reqd": 1
+  },
+  {
+   "fieldname": "ref_practitioner",
+   "fieldtype": "Link",
+   "label": "Discharging Consultant",
+   "options": "Healthcare Practitioner"
+  },
+  {
+   "fetch_from": "patient.blood_group",
+   "fieldname": "blood_group",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Blood Group",
+   "options": "\nA Positive\nA Negative\nAB Positive\nAB Negative\nB Positive\nB Negative\nO Positive\nO Negative"
+  },
+  {
+   "fieldname": "most_responsible_consult_doctor",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Most Responsible Consult Doctor",
+   "options": "Healthcare Practitioner"
+  },
+  {
+   "fieldname": "date_of_admission",
+   "fieldtype": "Date",
+   "hidden": 1,
+   "label": "Date of Admission"
+  },
+  {
+   "fetch_from": "patient.inpatient_record",
+   "fieldname": "inpatient_record",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Inpatient Record",
+   "options": "Inpatient Record"
+  },
+  {
+   "fetch_from": "inpatient_record.type",
+   "fieldname": "type",
+   "fieldtype": "Data",
+   "label": "Type",
+   "read_only": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Discharge Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "time_of_discharge",
+   "fieldtype": "Time",
+   "label": "Time of discharge"
+  },
+  {
+   "fieldname": "operator",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Operator",
+   "options": "Healthcare Practitioner"
+  },
+  {
+   "fieldname": "section_break_vg6cv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "diagnosis_at_discharge",
+   "fieldtype": "Small Text",
+   "label": "Diagnosis at Discharge"
+  },
+  {
+   "fieldname": "column_break_0rhmv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "operations_and_procedures",
+   "fieldtype": "Small Text",
+   "hidden": 1,
+   "label": "Operations and Procedures"
+  },
+  {
+   "fieldname": "section_break_wxaod",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "reason__admission_and_presenting_complaints",
+   "fieldtype": "Small Text",
+   "hidden": 1,
+   "label": "Reason  Admission and Presenting Complaints"
+  },
+  {
+   "fieldname": "relevant_investigations_and_results",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Relevant Investigations and Results"
+  },
+  {
+   "fieldname": "column_break_kzfd4",
+   "fieldtype": "Column Break",
+   "hidden": 1,
+   "label": "Physical Ability  Cognitive Function "
+  },
+  {
+   "fieldname": "physical",
+   "fieldtype": "Small Text",
+   "hidden": 1,
+   "label": "Physical"
+  },
+  {
+   "fieldname": "section_break_7escr",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "cognitive",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Cognitive"
+  },
+  {
+   "fieldname": "column_break_yl7zt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "others",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Others"
+  },
+  {
+   "fieldname": "on_admission_at_discharge",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "On Admission At Discharge:"
+  },
+  {
+   "fieldname": "aot_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Advice, recommendations and future plans (including results awaited and outstanding investigations)"
+  },
+  {
+   "fieldname": "gp_actions_date",
+   "fieldtype": "Date",
+   "label": "G.P. Actions (Date)"
+  },
+  {
+   "fieldname": "actions_and_outstanding_investigations",
+   "fieldtype": "Small Text",
+   "label": "Actions and Outstanding Investigations"
+  },
+  {
+   "fieldname": "medications_stopped_changed_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Medications Stopped/ Changed"
+  },
+  {
+   "fieldname": "select",
+   "fieldtype": "Select",
+   "label": "Select",
+   "options": "Yes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.select==\"Yes\"",
+   "fieldname": "if_yes_please_give_details",
+   "fieldtype": "Small Text",
+   "label": "If yes please give details"
+  },
+  {
+   "fieldname": "name_of_doctor",
+   "fieldtype": "Link",
+   "label": "Name of Doctor",
+   "options": "Healthcare Practitioner"
+  },
+  {
+   "fieldname": "section_break_vz1zs",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "discharge_tab",
+   "fieldtype": "Tab Break",
+   "label": "Discharge Medication"
+  },
+  {
+   "fieldname": "section_break_zzf3e",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "discharge_drug_prescription",
+   "fieldtype": "Table",
+   "label": "Discharge Drug Prescription",
+   "options": "Drug Prescription"
+  },
+  {
+   "fieldname": "details_of_discharging_doctor_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Details of Discharging Doctor"
+  },
+  {
+   "fieldname": "medication_so",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "medication_so",
+   "options": "Sales Order"
+  },
+  {
+   "fieldname": "services_so",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "services_so",
+   "options": "Sales Order"
+  },
+  {
+   "fieldname": "inpatient_order",
+   "fieldtype": "Link",
+   "label": "Inpatient Order",
+   "options": "Inpatient Order",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Discharge Emergency",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "ref_practitoner",
+   "fieldtype": "Link",
+   "label": "ref_practitoner",
+   "options": "Healthcare Practitioner",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pharmacy_dispensed_by",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Pharmacy dispensed by"
+  },
+  {
+   "fieldname": "deet",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "finance_department_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Finance department:"
+  },
+  {
+   "fieldname": "state_of_patient_account_clearance_section",
+   "fieldtype": "HTML",
+   "options": "state of patient account clearance"
+  },
+  {
+   "columns": 1,
+   "default": "0",
+   "fieldname": "clearing",
+   "fieldtype": "Check",
+   "label": "Clearing"
+  },
+  {
+   "columns": 1,
+   "fieldname": "column_break_xbfsi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 3,
+   "default": "0",
+   "fieldname": "not_clearing",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Not clearing"
+  },
+  {
+   "fieldname": "section_break_x2orx",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "ht",
+   "fieldtype": "HTML",
+   "options": "IF NOT CLEARING (Residual fee)\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026"
+  },
+  {
+   "fieldname": "gu",
+   "fieldtype": "HTML",
+   "options": "Guarantor\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026\u2026."
+  },
+  {
+   "fieldname": "datte",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "emergency",
+   "fieldtype": "Link",
+   "label": "Emergency",
+   "options": "Emergency"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Discharge Emergency",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-08-15 15:10:47.505024",
+ "modified_by": "Administrator",
+ "module": "HIS",
+ "name": "Discharge Emergency",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "All",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Doctor",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "patient_name"
+}

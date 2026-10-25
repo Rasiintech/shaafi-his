@@ -125,9 +125,11 @@ def refer_from_doctor(patient,request, type,ref_practitioner, rtype = None,to=No
      
         
     if type == 'E.R':
+        # frappe.msgprint(ref_practitioner)
         emergency = frappe.get_doc({
         "doctype" : "Emergency",
         "patient": patient,
+        "practitioner": "Emergency",
         "ref_practitioner": ref_practitioner,
         "request":request
              
