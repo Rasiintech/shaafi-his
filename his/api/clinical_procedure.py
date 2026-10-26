@@ -1,6 +1,8 @@
 # Copyright (c) 2021, Rasiin and contributors
 # For license information, please see license.txt
 import frappe
+from frappe import _
+from frappe.utils import get_link_to_form
 from healthcare.healthcare.doctype.clinical_procedure.clinical_procedure import ClinicalProcedure
 from his.his.doctype.aneasthesia_sheet.aneasthesia_sheet import transfer
 class CustomClinicalProcedure(ClinicalProcedure):
@@ -124,6 +126,55 @@ class CustomClinicalProcedure(ClinicalProcedure):
                 return stock_entry
 
 
+
+ACTIVE = {"docstatus": ["<", 2], "status": ["!=", "Cancelled"]}
+
+
+def block_duplicate_invoice_line(doc, method=None):
+    """D1: one invoice line / one OT Schedule = one active Clinical Procedure."""
+    if doc.docstatus == 2:
+        return
+
+    watched = ("sales_invoice_item", "ot_schedule", "sales_invoice", "procedure_template")
+    # Only check new procedures, or when one of the linking fields changes.
+    # Old duplicates from before this fix can still be edited.
+    if not doc.is_new() and not any(doc.has_value_changed(f) for f in watched if doc.meta.has_field(f)):
+        return
+
+    def _other(filters):
+        return frappe.db.get_value(
+            "Clinical Procedure", {**filters, **ACTIVE, "name": ["!=", doc.name]}, "name")
+
+    # 1) Same invoice line
+    if doc.get("sales_invoice_item"):
+        other = _other({"sales_invoice_item": doc.sales_invoice_item})
+        if other:
+            _stop(_("This invoice line is already linked to Clinical Procedure {0}.").format(
+                get_link_to_form("Clinical Procedure", other)))
+
+    # 2) Same OT Schedule
+    if doc.meta.has_field("ot_schedule") and doc.get("ot_schedule"):
+        other = _other({"ot_schedule": doc.ot_schedule})
+        if other:
+            _stop(_("OT Schedule {0} already has Clinical Procedure {1}.").format(
+                get_link_to_form("OT Schedule", doc.ot_schedule),
+                get_link_to_form("Clinical Procedure", other)))
+
+    # 3) No invoice line: same invoice + same procedure template
+    if not doc.get("sales_invoice_item") and doc.get("sales_invoice") and doc.get("procedure_template"):
+        other = _other({"sales_invoice": doc.sales_invoice,
+                        "procedure_template": doc.procedure_template,
+                        "sales_invoice_item": ["in", ["", None]]})
+        if other:
+            _stop(_("Invoice {0} already has Clinical Procedure {1} for {2}.").format(
+                get_link_to_form("Sales Invoice", doc.sales_invoice),
+                get_link_to_form("Clinical Procedure", other),
+                frappe.bold(doc.procedure_template)))
+
+
+def _stop(msg):
+    frappe.throw(msg + " " + _("Open that procedure instead of creating a new one."),
+                 title=_("Duplicate Procedure"))
 
 # @frappe.whitelist()	
 # def clinical_pro_comm(doc , method = None):

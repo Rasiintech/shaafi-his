@@ -355,6 +355,8 @@ def _get_performer_percent_for_cp(cp, item_group, eff_so, _cache):
 
     applicable = []
     for rule in perf_rules:
+        if _normalize_str(rule.get("applies_when")) != "Performer Only":   # B2: only Performer Only reduces the requester
+            continue
         if _normalize_str(rule.get("rule_type")) != "Procedure Percent":
             continue
         if _normalize_str(rule.get("item_group")) != _normalize_str(item_group):
@@ -617,6 +619,50 @@ def _get_ot_base_amount_and_source_order(cp_row):
 
     return base, ref_invoice, eff_so
 
+def _keep_last_cp_per_invoice_line(cps):
+    """B1: if several completed CPs point to the same invoice line, keep only the last one created."""
+    if not cps:
+        return cps
+
+    winners = {}
+
+    # CPs linked by Sales Invoice Item
+    siis = list({cp.get("sales_invoice_item") for cp in cps if cp.get("sales_invoice_item")})
+    if siis:
+        rows = frappe.db.sql("""
+            SELECT sales_invoice_item, name
+            FROM `tabClinical Procedure`
+            WHERE docstatus = 1 AND status = 'Completed'
+              AND sales_invoice_item IN %(s)s
+            ORDER BY creation DESC, name DESC
+        """, {"s": tuple(siis)}, as_dict=True)
+        for r in rows:
+            winners.setdefault(("SII", r.sales_invoice_item), r.name)   # first row = last created
+
+    # CPs with no Sales Invoice Item (linked by invoice + template)
+    if _has_field("Clinical Procedure", "sales_invoice") and _has_field("Clinical Procedure", "procedure_template"):
+        pairs = {(cp.get("sales_invoice"), cp.get("procedure_template")) for cp in cps
+                 if not cp.get("sales_invoice_item") and cp.get("sales_invoice") and cp.get("procedure_template")}
+        for inv, tpl in pairs:
+            last = frappe.db.sql("""
+                SELECT name FROM `tabClinical Procedure`
+                WHERE docstatus = 1 AND status = 'Completed'
+                  AND sales_invoice = %s AND procedure_template = %s
+                  AND IFNULL(sales_invoice_item, '') = ''
+                ORDER BY creation DESC, name DESC LIMIT 1
+            """, (inv, tpl))
+            if last:
+                winners[("INV", inv, tpl)] = last[0][0]
+
+    out = []
+    for cp in cps:
+        key = (("SII", cp.get("sales_invoice_item")) if cp.get("sales_invoice_item")
+               else ("INV", cp.get("sales_invoice"), cp.get("procedure_template")))
+        if key in winners and winners[key] != cp.get("name"):
+            continue   # an older duplicate on the same invoice line: not paid
+        out.append(cp)
+    return out
+
 def _return_item_link_fields():
     """
     Possible fields on Sales Invoice Item that may point back to original invoice item.
@@ -855,10 +901,11 @@ def execute(filters=None):
             })
 
     invoice_lines = _load_invoice_lines(from_date, to_date, filters)
-    cps = _load_completed_procedures(from_date, to_date, filters)
+    cps = _keep_last_cp_per_invoice_line(_load_completed_procedures(from_date, to_date, filters))   # B1
 
     # Option B: add submitted Sales Invoice Return adjustments as separate negative procedure rows
-    procedure_return_adjustments = _load_completed_procedure_return_adjustments(from_date, to_date, filters)
+    procedure_return_adjustments = _keep_last_cp_per_invoice_line(                                 # B1
+        _load_completed_procedure_return_adjustments(from_date, to_date, filters))
     cps = cps + procedure_return_adjustments
 
     if view == "Details":
@@ -942,6 +989,8 @@ def get_columns_details():
         {"label": _("Date"), "fieldname": "date", "fieldtype": "Date", "width": 95},
         {"label": _("Reference Type"), "fieldname": "reference_type", "fieldtype": "Data", "width": 140},
         {"label": _("Reference"), "fieldname": "reference", "fieldtype": "Dynamic Link", "options": "reference_type", "width": 170},
+        {"label": _("Receiver"), "fieldname": "receiver", "fieldtype": "Link", "options": "Healthcare Practitioner", "width": 200},   # A1
+        {"label": _("Invoice"), "fieldname": "invoice", "fieldtype": "Link", "options": "Sales Invoice", "width": 170},              # A2
         {"label": _("Patient"), "fieldname": "patient", "fieldtype": "Link", "options": "Patient", "width": 140},
         {"label": _("Patient Name"), "fieldname": "patient_name", "fieldtype": "Data", "width": 180},
         {"label": _("Item / Procedure"), "fieldname": "item_or_procedure", "fieldtype": "Data", "width": 240},
@@ -1171,6 +1220,8 @@ def build_details(receivers, invoice_lines, cps, filters):
                     "date": line.get("posting_date"),
                     "reference_type": "Sales Invoice",
                     "reference": line.get("invoice"),
+                    "receiver": receiver_prac,   # A1
+                    "invoice": line.get("invoice"),   # A2
                     "patient": line.get("patient"),
                     "patient_name": line.get("patient_name"),
                     "item_or_procedure": f"{line.get('item_code') or ''} - {line.get('item_name') or ''}".strip(" -"),
@@ -1267,6 +1318,8 @@ def build_details(receivers, invoice_lines, cps, filters):
                 "date": cp.get("done_date"),
                 "reference_type": reference_type,
                 "reference": reference,
+                "receiver": receiver_prac,   # A1
+                "invoice": inv,   # A2
                 "patient": cp.get("patient"),
                 "patient_name": cp.get("patient_name"),
                 "item_or_procedure": item_or_procedure,
@@ -1329,15 +1382,22 @@ def build_item_group_summary(receivers, invoice_lines, cps, filters):
         "tx_count": 0,
         "by_item_group": {},
     }
+    totals["billed_once"] = 0.0          # A3
+    seen_lines = set()                   # A3
 
     rules_map = {r["profile"]: _get_profile_rules(r["profile"]) for r in receivers}
 
     agg = {}
     performer_pct_cache = {}
 
-    def add_bucket(item_group, scenario, source_order, base, commission, is_invoice):
+    def add_bucket(item_group, scenario, source_order, base, commission, is_invoice, line_key=None):   # A3: line_key
         scenario = scenario or "Any"
         source_order = source_order or "OPD"
+
+        # A3: count each invoice line / procedure once for the "Billed" card
+        if line_key and line_key not in seen_lines:
+            seen_lines.add(line_key)
+            totals["billed_once"] += flt(base)
 
         key = (item_group, scenario, source_order)
         row = agg.setdefault(key, {
@@ -1401,7 +1461,8 @@ def build_item_group_summary(receivers, invoice_lines, cps, filters):
                 if not commission:
                     continue
                 scenario = _normalize_str(rule.get("applies_when") or "Any") or "Any"
-                add_bucket(ig, scenario, inv_so, base, commission, is_invoice=True)
+                add_bucket(ig, scenario, inv_so, base, commission, is_invoice=True,
+                           line_key=("SII", line.get("invoice_item"))) 
 
     # Procedure buckets (net requester % when requester/requester-only)
     for rec in receivers:
@@ -1458,7 +1519,8 @@ def build_item_group_summary(receivers, invoice_lines, cps, filters):
             if not commission:
                 continue
 
-            add_bucket(ig, scenario, eff_so, base, commission, is_invoice=False)
+            add_bucket(ig, scenario, eff_so, base, commission, is_invoice=False,
+                       line_key=("CP", cp.get("name"), cp.get("__return_invoice_item")))
 
     rows = []
     for (_ig, _sc, _so), r in agg.items():
@@ -1486,6 +1548,13 @@ def make_kpis_and_chart(totals, details_mode: bool):
         {"label": _("Procedure Commission"), "value": flt(totals.get("procedure_commission")), "datatype": "Currency"},
         {"label": _("Transactions"), "value": int(totals.get("tx_count") or 0), "datatype": "Int"},
     ]
+
+    if "billed_once" in totals:   # A3: only the By Item Group view has this
+        billed = flt(totals.get("billed_once"))
+        summary.append({"label": _("Billed (each line once)"), "value": billed, "datatype": "Currency"})
+        summary.append({"label": _("Commission % of Billed"),
+                        "value": (flt(totals.get("total_commission")) / billed * 100.0) if billed else 0,
+                        "datatype": "Percent"})
 
     if details_mode:
         by = totals.get("by_item_group") or {}

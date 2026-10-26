@@ -223,6 +223,9 @@ doc_events = {
 	},
     "Clinical Procedure":{
     #     "after_insert": "his.api.clinical_procedure.ot_schedule",
+        "validate": [
+            "his.api.clinical_procedure.block_duplicate_invoice_line",
+        ],
         "on_submit": [
             "his.commission.work_handlers.on_submit_clinical_procedure"
         ],
